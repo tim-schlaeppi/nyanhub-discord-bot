@@ -6,7 +6,7 @@ from discord_slash import SlashCommand, SlashContext
 
 import db
 
-
+db.init()
 bot = commands.Bot(command_prefix=db.get_command_prefix)
 
 with open("token.txt") as file:
@@ -25,17 +25,26 @@ async def on_message(message):
     if(message.author == bot.user):
         return
 
-    if "69" in message.content:
-        await message.channel.send("Nice.")
 
-    if "420" in message.content:
-        await message.channel.send("Blaze it")
-
-    if "csgo" in message.content\
-            and random.randint(1,20) > 19:
-        await message.add_reaction(":csgo:769618730383573062")
+    if bot.user in message.mentions and "prefix" in message.content:
+        prefix = db.get_guild_setting(message.guild, db.GUILD_SETTINGS.COMMAND_PREFIX)
+        await message.channel.send(f"Präfix ist '{prefix}'")
 
     await bot.process_commands(message)
+
+@bot.command(name="prefix")
+async def botcommand_prefix(ctx, *args):
+    if len(args) > 0:
+        db.set_guild_setting(ctx.guild, db.GUILD_SETTINGS.COMMAND_PREFIX, args[0])
+        await ctx.send(f"Präfix ist neu '{args[0]}'")
+
+    else:
+        prefix = db.get_guild_setting(ctx.guild, db.GUILD_SETTINGS.COMMAND_PREFIX)
+        await ctx.send(f"Präfix ist '{prefix}'")
+
+@bot.command(name="hallowelt")
+async def botcommand_hallowelt(ctx, *args):
+    await ctx.send("Hallo zurück!")
 
 bot.run(TOKEN)
 
