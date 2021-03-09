@@ -1,3 +1,12 @@
+# API-Token
+token.txt
+
+# Pycharm
+.idea/
+
+# Datenbank
+*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
