@@ -56,7 +56,9 @@ Implementierte guild_settings bisher:
     command_prefix: Bestimmt das command prefix pro Server. wird in der Funktion get/set_command_prefix verwendet
 '''
 def set_guild_setting(guild_id, setting_name, setting_value):
-    if not isinstance(guild_id, int):
+    if guild_id is None:
+        guild_id = 0
+    elif not isinstance(guild_id, int):
         guild_id = guild_id.id
 
     conn = sqlite3.connect(DATABASE)
@@ -83,7 +85,10 @@ def set_default_setting(setting_name, setting_value):
     set_guild_setting(0, setting_name, setting_value)
 
 def get_command_prefix(bot, message):
-    return get_guild_setting(message.guild.id, GUILD_SETTINGS.COMMAND_PREFIX)
+    if message.guild:
+        return get_guild_setting(message.guild.id, GUILD_SETTINGS.COMMAND_PREFIX)
+    else:
+        return get_guild_setting(0, GUILD_SETTINGS.COMMAND_PREFIX)
 
 def set_command_prefix(guild, prefix):
     set_guild_setting(guild.id, GUILD_SETTINGS.COMMAND_PREFIX, prefix)
