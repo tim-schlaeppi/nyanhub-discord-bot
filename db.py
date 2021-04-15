@@ -6,7 +6,12 @@ import json
 DATABASE = "discord_bot.db"
 class GUILD_SETTINGS:
     COMMAND_PREFIX = "command_prefix"
+    IDLE_TIME = "idle_time"
 
+    SETTINGS = {
+        "COMMAND_PREFIX": COMMAND_PREFIX,
+        "IDLE_TIME": IDLE_TIME,
+    }
     def __setattr__(self, key, value):
         raise AttributeError("Can't assign to constants")
 
@@ -24,6 +29,13 @@ def init():
                   0,
                   GUILD_SETTINGS.COMMAND_PREFIX,
                   json.dumps("!"),
+              ]
+    )
+    c.execute("INSERT INTO guild_setting (guild_id, setting_name, setting_value) VALUES (?, ?, ?)"
+              "ON CONFLICT DO NOTHING", [
+                  0,
+                  GUILD_SETTINGS.IDLE_TIME,
+                  json.dumps(60),
               ]
     )
 
@@ -49,11 +61,12 @@ def get_guild_setting(guild_id, setting_name):
     if row is None:
         return None
     else:
-        return json.loads(row[0])
+        return json.loads(str(row[0]))
 
 '''
 Implementierte guild_settings bisher:
     command_prefix: Bestimmt das command prefix pro Server. wird in der Funktion get/set_command_prefix verwendet
+    idle_time: Wie lange ein Bot ohne Aktion im Sprachchannel bleibt
 '''
 def set_guild_setting(guild_id, setting_name, setting_value):
     if guild_id is None:
