@@ -115,14 +115,23 @@ async def botcommand_say(ctx, *args):
     elif re.match("^oke$", " ".join(args)):
         await bot_helper.play_sound_or_give_error(ctx, "oke.ogg")
 
+    elif re.match("^(shut up ?){1,2}$", " ".join(args)):
+        await bot_helper.play_sound_or_give_error(ctx, "shut_up_shut_up.ogg")
+
     elif re.match("^yo(ur?)? mom'?s a (whore|hoe?)$", " ".join(args)):
         await bot_helper.play_sound_or_give_error(ctx, "your_moms_a_hoe.ogg")
+
+    elif re.match("^you (are|r) ga[ey]$", " ".join(args)):
+        await bot_helper.play_sound_or_give_error(ctx, "you_are_gay.ogg")
+
+    elif re.match("^(wh?)y (are|r) (yo)?u ga[ey]$", " ".join(args)):
+        await bot_helper.play_sound_or_give_error(ctx, "why_are_you_gay.ogg")
 
 
 @bot.command(name="leave")
 async def botcommand_leave(ctx, *args):
     if ctx.author.voice is None:
-        ctx.send("Du bist in keinem Sprachchannel.")
+        await ctx.send("Du bist in keinem Sprachchannel.")
         return
 
     for voice_client in bot.voice_clients:
