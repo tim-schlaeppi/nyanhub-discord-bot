@@ -3,7 +3,7 @@ import json
 
 # Einstellungen
 
-DATABASE = "discord_bot.db"
+DATABASE = "discord/discord_bot.db"
 class GUILD_SETTINGS:
     COMMAND_PREFIX = "command_prefix"
     IDLE_TIME = "idle_time"

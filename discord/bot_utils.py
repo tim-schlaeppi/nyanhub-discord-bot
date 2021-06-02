@@ -19,10 +19,41 @@ class VoiceClient:
     def play(self, filename):
         self.voice_client.play(discord.FFmpegPCMAudio(f"sounds/{filename}"))
 
+class Pagination:
+    pages = None
+    message = None
+    index = 0
+    channel = None
+    embed = None
+
+    def __init__(self, channel, pages, title):
+        self.pages = pages
+        self.title = title
+        self.channel = channel
+        self.index = 0
+        self.embed = discord.Embed(title=self.title, description="")
+
+    async def set_page(self, index):
+        self.index = index
+
+        self.embed.description = self.pages[index]
+        self.embed.title = self.title + f" ({index+1} / {len(self.pages)})"
+
+        if self.message:
+            await self.message.edit(embed=self.embed)
+        else:
+            message = await self.channel.send(embed=self.embed)
+            self.message = message
+
+        await self.message.add_reaction(Emojis.ARROW_FIRST)
+        await self.message.add_reaction(Emojis.ARROW_BACK)
+        await self.message.add_reaction(Emojis.ARROW_FORWARD)
+        await self.message.add_reaction(Emojis.ARROW_LAST)
 
 class BotUtils:
     bot = None
     voice_clients = list()
+    paginations = list()
 
     def __init__(self, bot):
         self.bot = bot
@@ -44,9 +75,10 @@ class BotUtils:
 
         return voice_client
 
-    async def play_sound_or_give_error(self, ctx, filename):
+    async def play_sound(self, ctx, filename):
         voice_client = await self.find_existing_channel_or_create_new(ctx)
-        voice_client.play(discord.FFmpegPCMAudio(f"sounds/{filename}"))
+        if voice_client:
+            voice_client.play(discord.FFmpegPCMAudio(f"sounds/{filename}"))
 
     async def disconnect_idle_voice_clients(self):
         if len(self.voice_clients) == 0:
@@ -68,3 +100,22 @@ class BotUtils:
                 await voice_client.disconnect()
                 del self.voice_clients[i]
                 break
+
+    async def paginate(self, channel, pages, title):
+        pagination = Pagination(channel, pages, title)
+        await pagination.set_page(0)
+        self.paginations.append(pagination)
+
+
+    def is_paginated_message(self, message):
+        for pagination in self.paginations:
+            if pagination.message == message:
+                return True
+        return False
+
+class Emojis:
+    ARROW_FIRST = "\u23ee"
+    ARROW_BACK = "\u23ea"
+    ARROW_FORWARD = "\u23e9"
+    ARROW_LAST = "\u23ed"
+
