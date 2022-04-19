@@ -1,3 +1,10 @@
+# This project is archived
+**This project is archived because**
+1. **discord.py is archived and**
+2. **the bot doesn't work anymore anyway**
+
+**Since the beginning of the year, bots can only work with Slash-commands, not normal text messages. Which is exactly why I'm learning JavaScript (*whyy*) and creating a new bot with discord.js**
+
 # Nyanhub Discord Bot EN
 ## What is the Nyanhub bot?
 I created this bot for our private discord server, called Nyanhub. Because I think keeping all that code to yourself is selfish, I decided to put the source on here. You are free to copy the bot and experiment with it yourself.
